@@ -1,0 +1,59 @@
+<?php
+/*------------------------------------------------------------------------------
+ * Drupal hooks
+ */
+// Hook init - contact is on virtually every page.
+function webform_popup_init() {
+  // ID for popups processing is added via menu_attributes module
+  popups_add_popups(array('.webform-popup'=>array(
+    'hijackDestination' => FALSE,
+    'width' => '570px',
+  )));
+}
+
+// Hook menu
+function webform_popup_menu() {
+  $items = array();
+  $items['webpop/%node'] = array(
+    'access callback' => TRUE,
+    'title callback' => 'webform_popup_title',
+    'title arguments' => array(1),
+    'page arguments' => array(1),
+    'page callback' => 'webform_popup_callback',
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/*------------------------------------------------------------------------------
+ * Popup hooks
+ */
+// Hook popups skins
+function webform_popup_popups_skins() {
+  // Adapted from code in actual hook_popups_skins() ;-)
+  $skins = array(); 
+  $skins_directory = drupal_get_path('module', 'webform_popup') .'/skins';
+  $files = file_scan_directory($skins_directory, '\.css$');
+
+  foreach ($files as $file) {
+    $name = drupal_ucfirst($file->name);
+    $skins[$name]['css'] = $file->filename;
+    $js = substr_replace($file->filename, '.js', -4);
+    if (file_exists($js)) {
+      $skins[$name]['js'] = $js;
+    }
+  }
+  return $skins;
+}
+
+/*------------------------------------------------------------------------------
+ * Callbacks
+ */
+function webform_popup_callback($node) { return node_view($node, FALSE, TRUE); }
+function webform_popup_title($node)    { return t($node->title); }
+
+
+
+
+
+

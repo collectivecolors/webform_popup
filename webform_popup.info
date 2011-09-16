@@ -1,0 +1,6 @@
+name = Webform popup
+description = "Provides popup capability for webforms. ?=popup/[form-nid]"
+package = User interface
+dependencies[] = popups
+dependencies[] = webform
+core = 6.x
